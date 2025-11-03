@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- DNS 预解析 - 加速图片加载 -->
-    <link rel="dns-prefetch" href="//api.zk99999.dpdns.org" />
-    <link rel="preconnect" href="https://api.zk99999.dpdns.org" crossorigin />
+    <link rel="dns-prefetch" href="//api.zk9999902.dpdns.org" />
+    <link rel="preconnect" href="https://api.zk9999902.dpdns.org" crossorigin />
 
     <style>
       body {
@@ -273,7 +273,7 @@
         padding: 15px 25px;
         border-radius: 8px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        z-index: 9999;
+        z-index: 10003;
         animation: slideDown 0.3s ease-out;
         max-width: 80%;
         word-wrap: break-word;
@@ -323,7 +323,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 10000;
+        z-index: 10002;
         animation: fadeIn 0.3s ease-out;
       }
       .confirm-content {
@@ -412,7 +412,7 @@
       />
     </div>
 
-    <script src="config.js"></script>
+    <script src="config.js?v=20251103i"></script>
     <script>
       // 图片预览功能 + 滚轮缩放 + 拖动
       let currentScale = 1;
@@ -616,7 +616,8 @@
           const response = await fetch(
             `${window.API_CONFIG.PHOTOS}?id=${encodeURIComponent(
               id
-            )}&page=${page}&limit=${imgsPerPage}`
+            )}&page=${page}&limit=${imgsPerPage}&_=${Date.now()}`,
+            { cache: 'no-store' }
           );
 
           if (!response.ok) {
@@ -784,8 +785,11 @@
           console.log("删除响应内容:", result);
 
           if (response.ok && result.success) {
-            showToast(result.message || "已清空所有照片！", "success");
-            setTimeout(() => location.reload(), 1500);
+            showToast(result.message || "已清空所有照片！", "success", 800);
+            setTimeout(() => {
+              // 强制刷新页面,清除缓存
+              window.location.href = window.location.href.split('?')[0] + '?id=' + encodeURIComponent(id) + '&_t=' + Date.now();
+            }, 1200);
           } else {
             throw new Error(result.error || result.details || "删除失败");
           }
@@ -830,9 +834,12 @@
           console.log("删除响应内容:", result);
 
           if (response.ok && result.success) {
-            showToast(result.message || "照片已删除！", "success");
+            showToast(result.message || "照片已删除！", "success", 800);
             closeModal();
-            setTimeout(() => location.reload(), 1000);
+            setTimeout(() => {
+              // 强制刷新页面,清除缓存
+              window.location.href = window.location.href.split('?')[0] + '?id=' + encodeURIComponent(id) + '&_t=' + Date.now();
+            }, 1200);
           } else {
             throw new Error(result.error || result.details || "删除失败");
           }

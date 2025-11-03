@@ -52,12 +52,6 @@
 
 ![网络架构](https://mdn.alipayobjects.com/one_clip/afts/img/xeh7Tbo3wWcAAAAASQAAAAgAoEACAQFr/original)
 
-### ⚡ 性能优化对比
-
-展示优化前后的性能提升：拍照延迟降低 90%、图片大小减少 60%、URL 长度缩短
-36%、DNS 解析提速 90%
-
-![性能对比](https://mdn.alipayobjects.com/one_clip/afts/img/qqB7QbXfg_wAAAAARpAAAAgAoEACAQFr/original)
 
 ## 📁 项目结构
 
