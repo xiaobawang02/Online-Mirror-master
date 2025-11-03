@@ -1,7 +1,7 @@
 @echo off
 chcp 65001 >nul
 echo ================================================
-echo   部署到 Production（自定义域名）
+echo   部署到 Main（自定义域名）
 echo ================================================
 echo.
 
@@ -18,7 +18,7 @@ echo.
 
 echo 📤 步骤 2/2: 部署前端到 Pages...
 echo.
-call npx wrangler pages deploy . --project-name=online-mirror --branch=production --commit-dirty=true
+call npx wrangler pages deploy . --project-name=online-mirror --branch=main --commit-dirty=true
 if %errorlevel% neq 0 (
     echo ❌ Pages 部署失败
     pause

@@ -6,22 +6,16 @@ description: Cloudflare 部署流程和命令
 
 ## 🚀 部署命令
 
-### 部署到 Production (自定义域名)
-
-```bash
-npx wrangler pages deploy . --project-name=online-mirror --branch=production --commit-dirty=true
-```
-
-或使用快捷脚本：
-
-- Windows: `scripts/deploy-production.bat`
-- Linux/Mac: `scripts/deploy-production.sh`
-
-### 部署到 Preview (测试环境)
+### 部署到生产环境 (Main 分支 - 自定义域名)
 
 ```bash
 npx wrangler pages deploy . --project-name=online-mirror --branch=main --commit-dirty=true
 ```
+
+或使用快捷脚本：
+
+- Windows: `scripts/deploy-main.bat`
+- Linux/Mac: `scripts/deploy-main.sh`
 
 ### 部署 Worker API
 
@@ -35,14 +29,13 @@ wrangler deploy
 2. ✅ 确认 R2 存储桶 `photos` 已创建
 3. ✅ 测试所有页面功能正常
 4. ✅ 检查是否有 console.error 或调试代码
-5. ✅ 确认使用正确的分支（production 或 main）
+5. ✅ 确认部署到 main 分支（生产环境）
 
 ## 🔑 重要概念
 
 ### 分支说明
 
-- **production**: 绑定自定义域名，用于正式环境
-- **main**: 用于预览和测试，URL 格式为 `main.project.pages.dev`
+- **main**: 生产分支，绑定自定义域名 `https://zk9999902.dpdns.org`
 
 ### 环境变量
 
@@ -51,10 +44,10 @@ wrangler deploy
 
 ## ⚠️ 常见错误
 
-### 自定义域名指向旧版本
+### 自定义域名无法访问
 
-**原因**: 部署到了 main 分支而不是 production 分支  
-**解决**: 使用 `--branch=production` 重新部署
+**原因**: Cloudflare Pages 生产分支配置错误  
+**解决**: 确认 Pages 设置中生产分支为 `main`，并使用 `--branch=main` 部署
 
 ### API 请求失败
 

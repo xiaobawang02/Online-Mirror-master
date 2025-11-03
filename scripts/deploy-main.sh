@@ -1,11 +1,11 @@
 #!/bin/bash
 
 echo "================================================"
-echo "  部署到 Production（自定义域名）"
+echo "  部署到 Main（自定义域名）"
 echo "================================================"
 echo ""
 
-npx wrangler pages deploy . --project-name=online-mirror --branch=production --commit-dirty=true
+npx wrangler pages deploy . --project-name=online-mirror --branch=main --commit-dirty=true
 
 echo ""
 echo "================================================"

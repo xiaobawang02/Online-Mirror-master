@@ -22,7 +22,7 @@
 - **Worker 逻辑**：维持 `/api/upload|photos|ping` 的现有行为、CORS 头、R2 键命名（`id/timestamp.png`）与分页实现；新增接口需同步更新 `config.js`。
 
 ## 4. 部署与环境
-- 更新前端：`npx wrangler pages deploy . --project-name=online-mirror --branch=production --commit-dirty=true`（或 `--branch=main` 预览）；等价脚本位于 `scripts/`。
+- 更新前端：`npx wrangler pages deploy . --project-name=online-mirror --branch=main --commit-dirty=true`；等价脚本为 `scripts/deploy-main.bat` (Windows) 或 `scripts/deploy-main.sh` (Linux/Mac)。
 - 更新 Worker：`wrangler deploy`，确保 `wrangler.toml` 中的 R2 绑定 `PHOTO_BUCKET` 未改动。
 - 部署前确认：`config.js` 指向正确 Worker、各页面无 `console.log`（允许 `console.error`），R2 存储桶存在，功能自测通过。
 
