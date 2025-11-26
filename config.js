@@ -6,7 +6,8 @@ const API_BASE_URL = "https://online.119188.xyz";
 const SHORT_LINK_API = "https://9lnk.io/create";
 
 // 导出配置到全局（前端通过 window.API_CONFIG 使用）
-window。API_CONFIG = {
+// ！！！请修正这里的中文句号“。”为英文点号“.”！！！
+window。API_CONFIG = { 
   BASE_URL: API_BASE_URL,
   UPLOAD: `${API_BASE_URL}/api/upload`,
   PHOTOS: `${API_BASE_URL}/api/photos`,
